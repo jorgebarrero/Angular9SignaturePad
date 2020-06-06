@@ -1,28 +1,41 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import SignaturePad from 'signature_pad';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+} from "@angular/core";
+import SignaturePad from "signature_pad";
+
+import { WindowService } from "src/shared";
 
 @Component({
-  selector: 'app-signature-pad',
-  templateUrl: './signature-pad.component.html',
-  styleUrls: ['./signature-pad.component.scss']
+  selector: "app-signature-pad",
+  templateUrl: "./signature-pad.component.html",
+  styleUrls: ["./signature-pad.component.scss"],
 })
 export class SignaturePadComponent implements OnInit, AfterViewInit {
-  @ViewChild('sPad', {static: true}) signaturePadElement;
+  @ViewChild("sPad", { static: true }) signaturePadElement;
   signaturePad: any;
-  constructor() { }
+  constructor(private windowService: WindowService) {}
 
   ngOnInit(): void {
+    const width = this.windowService.windowRef.innerWidth;
+    console.log("width", width);
   }
 
   ngAfterViewInit(): void {
-    this.signaturePad = new SignaturePad(this.signaturePadElement.nativeElement);
+    this.signaturePad = new SignaturePad(
+      this.signaturePadElement.nativeElement
+    );
   }
 
   changeColor() {
     const r = Math.round(Math.random() * 255);
     const g = Math.round(Math.random() * 255);
     const b = Math.round(Math.random() * 255);
-    const color = 'rgb(' + r + ',' + g + ',' + b + ')';
+    const color = "rgb(" + r + "," + g + "," + b + ")";
     this.signaturePad.penColor = color;
   }
 
@@ -39,12 +52,15 @@ export class SignaturePadComponent implements OnInit, AfterViewInit {
   }
 
   download(dataURL, filename) {
-    if (navigator.userAgent.indexOf('Safari') > -1 && navigator.userAgent.indexOf('Chrome') === -1) {
+    if (
+      navigator.userAgent.indexOf("Safari") > -1 &&
+      navigator.userAgent.indexOf("Chrome") === -1
+    ) {
       window.open(dataURL);
     } else {
       const blob = this.dataURLToBlob(dataURL);
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = filename;
 
@@ -57,8 +73,8 @@ export class SignaturePadComponent implements OnInit, AfterViewInit {
 
   dataURLToBlob(dataURL) {
     // Code taken from https://github.com/ebidel/filer.js
-    const parts = dataURL.split(';base64,');
-    const contentType = parts[0].split(':')[1];
+    const parts = dataURL.split(";base64,");
+    const contentType = parts[0].split(":")[1];
     const raw = window.atob(parts[1]);
     const rawLength = raw.length;
     const uInt8Array = new Uint8Array(rawLength);
@@ -70,28 +86,28 @@ export class SignaturePadComponent implements OnInit, AfterViewInit {
 
   savePNG() {
     if (this.signaturePad.isEmpty()) {
-      alert('Please provide a signature first.');
+      alert("Please provide a signature first.");
     } else {
       const dataURL = this.signaturePad.toDataURL();
-      this.download(dataURL, 'signature.png');
+      this.download(dataURL, "signature.png");
     }
   }
 
   saveJPG() {
     if (this.signaturePad.isEmpty()) {
-      alert('Please provide a signature first.');
+      alert("Please provide a signature first.");
     } else {
-      const dataURL = this.signaturePad.toDataURL('image/jpeg');
-      this.download(dataURL, 'signature.jpg');
+      const dataURL = this.signaturePad.toDataURL("image/jpeg");
+      this.download(dataURL, "signature.jpg");
     }
   }
 
   saveSVG() {
     if (this.signaturePad.isEmpty()) {
-      alert('Please provide a signature first.');
+      alert("Please provide a signature first.");
     } else {
-      const dataURL = this.signaturePad.toDataURL('image/svg+xml');
-      this.download(dataURL, 'signature.svg');
+      const dataURL = this.signaturePad.toDataURL("image/svg+xml");
+      this.download(dataURL, "signature.svg");
     }
   }
 }

@@ -1,9 +1,13 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
 import { SignaturePadComponent } from './_componets/signature-pad/signature-pad.component';
+
+
+import { AppService } from 'src/shared';
+
 
 @NgModule({
   declarations: [
@@ -14,7 +18,10 @@ import { SignaturePadComponent } from './_componets/signature-pad/signature-pad.
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [ 
+    { provide: 'windowObject', useValue: window},
+    AppService
+  ]
   bootstrap: [AppComponent]
 })
 export class AppModule { }
